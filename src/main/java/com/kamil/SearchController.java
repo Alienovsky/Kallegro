@@ -1,5 +1,6 @@
 package com.kamil;
 
+import com.allegro.webapi.ItemsListType;
 import com.google.common.base.Splitter;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,20 +24,29 @@ class SearchController {
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "item/{query}")
-    public FoundItem searchItem(@PathVariable String query) {
+    public List<ItemsListType> searchItem(@PathVariable String query) {
         AllegroSearcher allegroSearcher = new AllegroSearcher(query);
-        Future<FoundItem> promiseString = es.submit(allegroSearcher);
-        FoundItem foundItem = new FoundItem("nic","nic");
+        Future<List<ItemsListType>> promiseString = es.submit(allegroSearcher);
+        List<ItemsListType> foundItems = new ArrayList<>();
         try {
-            foundItem = promiseString.get();
+            foundItems = promiseString.get();
         } catch (InterruptedException e) {
             e.printStackTrace();
         } catch (ExecutionException e) {
             e.printStackTrace();
         }
-        return foundItem;
+        return foundItems;
     }
-    @RequestMapping(method = RequestMethod.GET, value = "items/{query}")
+}
+
+
+
+
+
+
+
+
+  /*@RequestMapping(method = RequestMethod.GET, value = "items/{query}")
     public List<FoundItem> searchItems(@PathVariable String query) {
         ArrayList<FoundItem> foundItems = new ArrayList<>();
         ArrayList<Future<FoundItem>> result = new ArrayList<>();
@@ -55,5 +65,4 @@ class SearchController {
             }
         });
         return foundItems;
-    }
-}
+    }*/

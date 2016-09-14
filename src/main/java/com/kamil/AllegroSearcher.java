@@ -2,17 +2,17 @@ package com.kamil;
 
 import com.allegro.webapi.*;
 
-
+import java.util.List;
 import java.util.concurrent.Callable;
 
-class AllegroSearcher implements Callable<FoundItem> {
+class AllegroSearcher implements Callable<List<ItemsListType>> {
     String query;
 
     public AllegroSearcher(String query) {
         this.query = query;
     }
 
-    public FoundItem call() throws Exception {
+    public List<ItemsListType> call() throws Exception {
         ServiceService allegroWebApiService = new ServiceService();
         ServicePort allegro = allegroWebApiService.getServicePort();
 
@@ -30,9 +30,7 @@ class AllegroSearcher implements Callable<FoundItem> {
         arrayOfFilteroptionstype.getItem().add(filterOptionsType);
         doGetItemsListRequest.setFilterOptions(arrayOfFilteroptionstype);
         DoGetItemsListResponse doGetItemsListResponse = allegro.doGetItemsList(doGetItemsListRequest);
-        System.out.println(" # "+doGetItemsListResponse.getItemsList().getItem().get(0).getItemTitle());
-        String id = String.valueOf(doGetItemsListResponse.getItemsList().getItem().get(0).getItemId());
-        return new FoundItem("http://allegro.pl/show_item.php?item="+id,doGetItemsListResponse.getItemsList().getItem().get(0).getItemTitle());
+        return doGetItemsListResponse.getItemsList().getItem();
     }
 
 }
